@@ -1,10 +1,10 @@
-FROM python:3.9
+FROM python:3.9-alpine
 
+COPY . /app
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
+EXPOSE 5052
 
-COPY . .
-
-CMD ["python3", "email_command_server.py"]
+ENTRYPOINT ["python3"]
+CMD ["-m", "flask", "--app", "email_command_server", "run", "--host=0.0.0.0", "--port=5052"]

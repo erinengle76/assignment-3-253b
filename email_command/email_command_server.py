@@ -2,17 +2,10 @@ from flask import Flask, request, jsonify
 import json
 import logging
 import os
-from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from worker import sendEmailTask
-
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db:5432/users'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
 
 @app.route('/execute', methods = ['POST'])
 def send_message():
@@ -32,9 +25,19 @@ def send_message():
                 response_code = 400
             else:
                 if in_command == "email":
-                    emailAsyncTask = sendEmailTask.delay(in_command, to_email, email_subject, email_message)
-                    response = {"data": {"command": in_command, "message": "Your email has been queued"}}
-                    response_code = 200
+                    to_send = Mail(
+                        from_email=os.environ.get('SENDGRID_FROM_EMAIL'),
+                        to_emails= to_email,
+                        subject = email_subject,
+                        html_content = email_message
+                    )
+                    try:
+                        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                        sg.send(to_send)
+                        response = {"data": {"command": in_command, "message": "Email has been sent"}}
+                        response_code = 200
+                    except Exception as e:
+                        return jsonify(e)
                 else:
                     response = {"message": "This server only accepts email commands"}
                     response_code = 400      
@@ -49,6 +52,3 @@ def send_message():
         response_code = 400
     
     return json.dumps(response), response_code
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5052, debug=True)

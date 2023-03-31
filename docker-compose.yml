@@ -14,21 +14,6 @@ services:
         ports:
             - 5432:5432
 
-    worker:
-        build: ./worker
-        environment:
-            - CELERY_BROKER_URL=redis://redis:6379/0
-            - SENDGRID_FROM_EMAIL=XXXINPUT-SENDFROM-EMAIL-HEREXXXX
-            - SENDGRID_API_KEY=XXXINPUT-KEY-HEREXXX
-            - CELERY_RESULT_BACKEND=db+postgresql://postgres:postgres@db:5432/chatbot
-        volumes:
-            - ./worker/worker.py:/app/worker.py
-
-    redis:
-        image: redis
-        ports:
-            - "6379:6379"  
-
     chatbot_parser:
         build: ./chatbot_parser
         container_name: "chatbot_parser"
@@ -47,30 +32,12 @@ services:
     
     email_command:
         build: ./email_command
-        volumes:
-            - ./worker/worker.py:/app/worker.py
         container_name: "email_command"
         image: email-service-image
         ports:
             - 5052:5052
         environment:
-           - SENDGRID_FROM_EMAIL=XXXINPUT-FROM-EMAIL-HEREXXX
-           - SENDGRID_API_KEY=XXXINPUT-KEY-HEREXXX
-           - CELERY_BROKER_URL=redis://redis:6379/0
-           - CELERY_RESULT_BACKEND=db+postgresql://postgres:postgres@db:5432/chatbot
-        depends_on:
-            - db
-            - redis
-            - worker
-    
-    job_viewer:
-        image: mher/flower
-        environment:
-            - CELERY_BROKER_URL=redis://redis:6379
-            - FLOWER_PORT=8888
-        ports:
-            - 8888:8888
-        depends_on:
-            - redis
+           - SENDGRID_FROM_EMAIL=XXX_INPUT_SENDGRID_FROM_EMAILXXX
+           - SENDGRID_API_KEY=XXXINPUT_SENDGRID_KEYXXX
         
     
