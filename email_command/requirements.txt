@@ -1,0 +1,7 @@
+flask
+Flask-SQLAlchemy
+celery
+redis
+sendgrid==6.9.7
+postgres
+psycopg2==2.9.3
