@@ -1,4 +1,4 @@
-# Assignment-3 253B
+# Assignment-3 | BASIC SUBMIT BRANCH
 ## Side Branch (excl. Extra Credit Async Task Queues -- see main branch for extra credit)
 
 ### Author: Erin Jones
