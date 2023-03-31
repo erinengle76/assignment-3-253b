@@ -1,9 +1,9 @@
 # Assignment-3 253B
 ## Main Branch (incl. Extra Credit Async Task Queues)
 
-## Author: Erin Jones
-## Course: INFO 253B Spring 2023
-## Submission Date: 3/30/2023 (using late-submit pass #2)
+### Author: Erin Jones
+### Course: INFO 253B Spring 2023
+### Submission Date: 3/30/2023 (using late-submit pass #2)
 
 **Notes:
 - docker-compose file must be updated to include a send from email and sendgrid api key under both the worker and email_command services
